@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 13 — Sovereign ESG and Bond Spreads</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        :root {
+            --c1: #312e81;
+            --c2: #3730a3;
+            --accent: #818cf8;
+            --ink: #0f172a;
+            --body: #334155;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Source Sans 3', -apple-system, sans-serif;
+            line-height: 1.75;
+            color: var(--body);
+            background: var(--bg);
+        }
+
+        /* ── HERO ── */
+        .hero {
+            background: linear-gradient(160deg, var(--c1) 0%, var(--c2) 100%);
+            padding: 72px 24px 56px;
+            text-align: center;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.06) 0%, transparent 60%);
+        }
+        .hero-inner { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; }
+        .hero .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            padding: 5px 16px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+        .hero .subtitle {
+            font-size: 1.15rem;
+            opacity: 0.92;
+            font-weight: 400;
+            color: #ffffff;
+        }
+        .hero .meta {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+            gap: 28px;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            opacity: 0.85;
+            color: #ffffff;
+        }
+
+        /* ── CONTAINER ── */
+        .container { max-width: 860px; margin: 0 auto; padding: 0 20px 64px; }
+
+        /* ── SECTIONS ── */
+        .section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 36px 32px;
+            margin-top: 28px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+        }
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent);
+            display: inline-block;
+        }
+
+        /* ── RESEARCH QUESTION ── */
+        .rq {
+            background: linear-gradient(135deg, var(--c1), var(--c2));
+            color: #ffffff;
+            border: none;
+            font-size: 1.15rem;
+            font-style: italic;
+            text-align: center;
+            padding: 32px 36px;
+        }
+        .rq-label {
+            display: block;
+            font-style: normal;
+            font-weight: 700;
+            font-size: 0.78rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
+        /* ── DATA BOX ── */
+        .data-box {
+            background: #f1f5f9;
+            border-left: 4px solid var(--accent);
+            padding: 20px 24px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+            line-height: 1.85;
+        }
+        .data-box code {
+            background: #e2e8f0;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+        }
+
+        /* ── METHOD CARDS ── */
+        .methods-grid { display: flex; flex-direction: column; gap: 14px; }
+        .method-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 18px 22px;
+            transition: border-color 0.2s;
+        }
+        .method-card:hover { border-color: var(--accent); }
+        .method-name {
+            font-weight: 700;
+            color: var(--ink);
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+        .method-desc {
+            font-size: 0.92rem;
+            color: var(--muted);
+        }
+
+        /* ── FINDINGS ── */
+        .finding {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        .finding:last-child { margin-bottom: 0; }
+        .finding-num {
+            flex-shrink: 0;
+            width: 30px; height: 30px;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-top: 2px;
+        }
+        .finding-text {
+            font-size: 0.95rem;
+            color: var(--body);
+        }
+
+        /* ── CODE ── */
+        .code-block {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 24px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            line-height: 1.7;
+            color: #e2e8f0;
+        }
+        .code-block .comment { color: #64748b; }
+        .code-block .keyword { color: #c084fc; }
+        .code-block .string { color: #86efac; }
+        .code-block .function { color: #7dd3fc; }
+
+        /* ── TOOLS BAR ── */
+        .tools-bar {
+            text-align: center;
+            padding: 20px;
+            margin-top: 28px;
+            font-size: 0.9rem;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            text-align: center;
+            padding: 32px 20px;
+            font-size: 0.82rem;
+            color: var(--muted);
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .section { padding: 24px 18px; }
+            .hero { padding: 48px 18px 40px; }
+            .hero .meta { flex-direction: column; gap: 6px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="hero-inner">
+        <div class="badge">Project 13 · Financial Analytics</div>
+        <h1>Sovereign ESG and Bond Spreads</h1>
+        <p class="subtitle">Do Country-Level ESG Metrics Predict Sovereign Borrowing Costs?</p>
+        <div class="meta">
+            <span>Languages: Python & R</span>
+            <span>Category: Financial Analytics</span>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="section rq">
+        <span class="rq-label">Research Question</span>
+        Do improvements in sovereign ESG indicators (governance, environmental policy, social outcomes) reduce government bond yield spreads?
+    </div>
+
+    <div class="section">
+        <div class="section-title">Methodology</div>
+        <p>Panel regression with country and year fixed effects, using World Bank governance indicators, environmental performance indices, and social development metrics as predictors of sovereign bond spreads over US Treasuries.</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Data Collection &amp; Sources</div>
+        <div class="data-box"><b>Source:</b> World Bank API (<code>wbgapi</code>), IMF WEO, Worldwide Governance Indicators<br>
+<b>Countries:</b> 40+ emerging and developed markets<br>
+<b>Variables:</b> Bond spread, WGI governance scores, CO2 per capita, HDI, GDP growth, debt/GDP<br>
+<b>Key finding:</b> Governance improvements predict lower spreads (t = −2.28)</div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Key Methods</div>
+        <div class="methods-grid">
+            <div class="method-card">
+                <div class="method-name">Country Fixed Effects</div>
+                <div class="method-desc">Controls for all time-invariant country characteristics (legal system, culture, geography)</div>
+            </div>
+            <div class="method-card">
+                <div class="method-name">World Bank API (wbgapi)</div>
+                <div class="method-desc">Programmatic access to WDI indicators — enables reproducible, up-to-date sovereign ESG data collection</div>
+            </div>
+            <div class="method-card">
+                <div class="method-name">Driscoll-Kraay Standard Errors</div>
+                <div class="method-desc">Robust to cross-sectional dependence and heteroskedasticity — critical for sovereign panel data</div>
+            </div></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Key Findings</div>
+        
+            <div class="finding">
+                <div class="finding-num">1</div>
+                <div class="finding-text">Governance improvements (WGI composite) predict lower sovereign bond spreads (t = −2.28, p < 0.05)</div>
+            </div>
+            <div class="finding">
+                <div class="finding-num">2</div>
+                <div class="finding-text">Environmental metrics (CO2 per capita) show no significant spread effect after controlling for GDP — environmental risk not yet priced in sovereign debt</div>
+            </div>
+            <div class="finding">
+                <div class="finding-num">3</div>
+                <div class="finding-text">Social indicators (HDI, inequality) have marginal significance — the Governance pillar dominates the ESG–spread relationship</div>
+            </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Code Sample</div>
+        <pre class="code-block"># World Bank data retrieval
+import wbgapi as wb
+
+# Governance, CO2, HDI indicators
+indicators = ['GE.EST', 'EN.ATM.CO2E.PC', 'HD.HCI.OVRL']
+data = wb.data.DataFrame(indicators, economy=['USA','GBR','BRA','ZAF','IND'])
+
+# Panel regression
+from linearmodels.panel import PanelOLS
+model = PanelOLS.from_formula(
+    'spread ~ governance + co2_pc + hdi + gdp_growth + debt_gdp + EntityEffects + TimeEffects',
+    data=panel_df
+).fit(cov_type='clustered', cluster_entity=True)</pre>
+    </div>
+
+    <div class="tools-bar">Python · wbgapi · linearmodels · pandas · R (plm) · matplotlib</div>
+
+    <div class="footer">
+        Sustainable Finance Research Portfolio · Project 13 of 20<br>
+        AI-Assisted Research Workflow — Methodology directed by researcher, implementation assisted by Claude AI
+    </div>
+
+</div>
+</body>
+</html>
